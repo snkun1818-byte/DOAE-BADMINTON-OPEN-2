@@ -389,10 +389,9 @@ function held982(m){return !m.score&&!!(m.started||m.pending||m.awaiting||m.owne
 function order9817(a,b){return a.battle-b.battle||a.wave-b.wave||a.court-b.court||a.id-b.id}
 function phase9817(d){return d.matches.filter(m=>d.battles[6].a?m.battle===7:m.battle<7)}
 function readyQueue9817(d){
- let remain=phase9817(d).filter(m=>!m.score),first=Math.min(...remain.map(m=>m.battle)),busy=d.matches.filter(held982);
- if(!Number.isFinite(first))return [];
- // Do not pull an afternoon match while any morning match remains unfinished; Final requires existing authorization.
- return remain.filter(m=>(first===7?m.battle===7:first<=3?m.battle<=3:m.battle>=4&&m.battle<=6)&&m.published&&Array.isArray(m.lineup)&&m.lineup.length===4&&m.lineup.every(Boolean)&&new Set(m.lineup).size===4&&!held982(m)&&!busy.some(x=>x.lineup?.some(id=>m.lineup.includes(id)))).sort(order9817);
+ let remain=phase9817(d).filter(m=>!m.score),busy=d.matches.filter(held982);
+ // Allow all ready matches in the current round; staff control breaks and ceremonies. Final remains separately gated.
+ return remain.filter(m=>m.published&&Array.isArray(m.lineup)&&m.lineup.length===4&&m.lineup.every(Boolean)&&new Set(m.lineup).size===4&&!held982(m)&&!busy.some(x=>x.lineup?.some(id=>m.lineup.includes(id)))).sort(order9817);
 }
 function courtBusy9817(d,c){return d.matches.find(m=>held982(m)&&court982(m)===c)}
 function queue982(d){
